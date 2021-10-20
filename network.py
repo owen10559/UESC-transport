@@ -27,21 +27,33 @@ class Network:
             },
         }
     # 1. 增删查改
-    def add_node(self):
-        None
+    def add_node(self, nodeid):
+        assert nodeid not in self._neighbours
+
+        self._neighbours[nodeid] = []
 
     def remove_node(self, nodeid):
         None
 
     def add_link(self, from_nodeid, to_nodeid):
-        None
+        assert from_nodeid in self._neighbours
+        assert to_nodeid in self._neighbours
+        assert to_nodeid not in self._neighbours[from_nodeid]
+
+        self._neighbours[from_nodeid].append(to_nodeid)
 
     def remove_link(self, from_nodeid, to_nodeid):
-        None
+        assert from_nodeid in self._neighbours
+        assert to_nodeid in self._neighbours
+        assert to_nodeid in self._neighbours[from_nodeid]
+        
+        self._neighbours[from_nodeid].remove(to_nodeid)
+        for attribute in self._attributes.values():
+            del attribute[(from_nodeid, to_nodeid)]
 
     # 2. 查询
     def from_nodes(self, nodeid):
-        None
+        return self._neighbours[nodeid]
 
     def to_nodes(self, nodeid):
         None
