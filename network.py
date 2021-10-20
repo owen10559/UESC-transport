@@ -1,7 +1,31 @@
 class Network:
     def __init__(self):
-        None
+        self._neighbours = {}
+        self._attributes = {}
 
+    def make_example(self):
+        self._neighbours = {
+            "A": ["B", "C", "D"],
+            "B": [],
+            "C": [],
+            "D": ["B"]
+        }
+
+        self._attributes = {
+            "time": {
+                ("A", "B"): 23,
+                ("A", "C"): 34,
+                ("A", "D"): 26,
+                ("D", "B"): 17
+            },
+
+            "distance": {
+                ("A", "B"): 230,
+                ("A", "C"): 340,
+                ("A", "D"): 260,
+                ("D", "B"): 170
+            },
+        }
     # 1. 增删查改
     def add_node(self):
         None
