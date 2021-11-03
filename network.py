@@ -1,5 +1,9 @@
 from heapq import heappush, heappop
 
+
+
+
+
 class Network:
     def __init__(self):
         self._neighbours = {}
@@ -48,7 +52,7 @@ class Network:
         assert from_nodeid in self._neighbours
         assert to_nodeid in self._neighbours
         assert to_nodeid in self._neighbours[from_nodeid]
-        
+
         self._neighbours[from_nodeid].remove(to_nodeid)
         for attribute in self._attributes.values():
             del attribute[(from_nodeid, to_nodeid)]
