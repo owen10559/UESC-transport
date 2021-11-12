@@ -70,6 +70,15 @@ class Network:
     def nodes(self):
         self._neighbours.keys()
 
+    def links(self):
+        links = []
+
+        for cur_node, next_nodes in self._neighbours.items():
+            for next_node in next_nodes:
+                links.append((cur_node, next_node))
+
+        return links
+
     # 3. 属性
     def attributes(self, from_nodeid, to_nodeid):
         None
@@ -77,6 +86,14 @@ class Network:
     def cost(self, from_nodeid, to_nodeid):
         self.attributes(from_nodeid, to_nodeid)["cost"]
 
+    def shortest_route(self, od):
+        origin, destination = od
+        costs, routes = self.shortest_routes_from(origin)
+
+        for route in routes:
+            if routes[-1] == destination:
+                return route
+                
     # 4. 最短路径搜索
     def shortest_routes_from(self, nodeid):
         known = []
