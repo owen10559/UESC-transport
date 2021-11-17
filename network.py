@@ -1,9 +1,5 @@
 from heapq import heappush, heappop
 
-
-
-
-
 class Network:
     def __init__(self):
         self._neighbours = {}
@@ -35,18 +31,28 @@ class Network:
     # 1. 增删查改
     def add_node(self, nodeid):
         assert nodeid not in self._neighbours
-
         self._neighbours[nodeid] = []
 
     def remove_node(self, nodeid):
-        None
+        assert nodeid in self._neighbours
+        self._neighbours.pop(nodeid)
 
-    def add_link(self, from_nodeid, to_nodeid):
+    def set_attribute(self, from_nodeid, to_nodeid, time=0, distance=0):
+        assert from_nodeid in self._neighbours
+        assert to_nodeid in self._neighbours
+        assert to_nodeid in self._neighbours[from_nodeid]
+
+        self._attributes['time'][(from_nodeid, to_nodeid)] = time
+        self._attributes['distance'][(from_nodeid, to_nodeid)] = distance
+
+    def add_link(self, from_nodeid, to_nodeid, time=0, distance=0):
         assert from_nodeid in self._neighbours
         assert to_nodeid in self._neighbours
         assert to_nodeid not in self._neighbours[from_nodeid]
 
         self._neighbours[from_nodeid].append(to_nodeid)
+        self._attributes['time'].update({(from_nodeid, to_nodeid): time})
+        self._attributes['distance'].update({(from_nodeid, to_nodeid): distance})
 
     def remove_link(self, from_nodeid, to_nodeid):
         assert from_nodeid in self._neighbours
@@ -58,17 +64,24 @@ class Network:
             del attribute[(from_nodeid, to_nodeid)]
 
     # 2. 查询
+    def nodes(self):
+        return list(self._neighbours.keys())
+
     def next_nodes(self, nodeid):
         return self._neighbours[nodeid]
 
     def prev_nodes(self, nodeid):
-        None
+        prev_nodes_id = []
+        for nodeid_ in self.nodes():
+            if nodeid in self._neighbours[nodeid_]:
+                prev_nodes_id.append(nodeid_)
+        return prev_nodes_id
 
     def is_connected(self, from_nodeid, to_nodeid):
-        None
-
-    def nodes(self):
-        self._neighbours.keys()
+        if (to_nodeid in self._neighbours[from_nodeid]) or (from_nodeid in self._neighbours[to_nodeid]):
+            return True
+        else:
+            return False
 
     def links(self):
         links = []
@@ -79,12 +92,16 @@ class Network:
 
         return links
 
+    def show():
+        # 可视化
+        pass
+
     # 3. 属性
     def attributes(self, from_nodeid, to_nodeid):
-        None
+        return {"time": self._attributes["time"][(from_nodeid, to_nodeid)], "distance": self._attributes["distance"][(from_nodeid, to_nodeid)]}
 
     def cost(self, from_nodeid, to_nodeid):
-        self.attributes(from_nodeid, to_nodeid)["cost"]
+        self.attributes(from_nodeid, to_nodeid)["distance"]
 
     def shortest_route(self, od):
         origin, destination = od
@@ -93,7 +110,7 @@ class Network:
         for route in routes:
             if routes[-1] == destination:
                 return route
-                
+
     # 4. 最短路径搜索
     def shortest_routes_from(self, nodeid):
         known = []
